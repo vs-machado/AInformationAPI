@@ -9,15 +9,14 @@ lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.2"
 composeBom = "2024.09.03"
 retrofit2 = "2.11.0"
-retrofitConverter = "0.8.15"
-retrofitConverterVersion = "0.8.15"
 serialization = "2.0.0"
 serialization-core = "1.7.3"
-xmlutil = "0.90.1"
 okhttp = "4.12.0"
 ksp = "2.0.0-1.0.24"
 hilt = "2.51.1"
 tikxml = "0.8.13"
+navigationRuntimeKtx = "2.8.2"
+navigationCompose = "2.8.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,8 +36,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 retrofit-converter = { module = "com.tickaroo.tikxml:retrofit-converter", name = "retrofit-converter", version.ref = "tikxml" }
 retrofit2 = { module = "com.squareup.retrofit2:retrofit", name = "retrofit2", version.ref = "retrofit2" }
 serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization-core" }
-xmlutil = { group = "io.github.pdvrieze.xmlutil", name = "serialization-android", version.ref = "xmlutil" }
-xmlutil-core = { group = "io.github.pdvrieze.xmlutil", name = "core-android", version.ref = "xmlutil" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
@@ -46,6 +43,8 @@ converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "co
 tikxml-annotation = { group = "com.tickaroo.tikxml", name = "annotation", version.ref = "tikxml" }
 tikxml-core = { group = "com.tickaroo.tikxml", name = "core", version.ref = "tikxml" }
 tikxml-processor = { group = "com.tickaroo.tikxml", name = "processor", version.ref = "tikxml"}
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

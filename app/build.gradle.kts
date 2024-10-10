@@ -71,8 +71,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.retrofit2)
     implementation(libs.serialization.core)
-    implementation(libs.xmlutil)
-    implementation(libs.xmlutil.core)
     implementation(libs.okhttp)
     implementation(libs.hilt.android)
     implementation(libs.hilt.compiler)
@@ -81,4 +79,6 @@ dependencies {
     implementation(libs.tikxml.annotation)
     implementation(libs.tikxml.processor)
     implementation(libs.retrofit.converter)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.runtime.ktx)
 }
