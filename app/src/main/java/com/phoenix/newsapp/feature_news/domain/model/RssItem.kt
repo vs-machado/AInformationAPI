@@ -21,5 +21,5 @@ data class RssItem(
 ) {
     // imageUrl is inside the description field and needs to be parsed
     @Transient
-    var imageUrl: String = ""
+    var imageUrl: String? = null
 }
