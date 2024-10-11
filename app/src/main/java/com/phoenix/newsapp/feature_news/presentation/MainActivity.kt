@@ -1,4 +1,4 @@
-package com.phoenix.newsapp
+package com.phoenix.newsapp.feature_news.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,10 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.phoenix.newsapp.presentation.main_screen.MainScreen
+import com.phoenix.newsapp.feature_news.presentation.main_screen.MainScreen
 import com.phoenix.newsapp.ui.theme.NewsAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

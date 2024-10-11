@@ -1,15 +1,15 @@
 package com.phoenix.newsapp.di
 
-import com.phoenix.newsapp.data.api.BASE_URL
-import com.phoenix.newsapp.data.api.RssApiService
+import com.phoenix.newsapp.feature_news.data.api.BASE_URL
+import com.phoenix.newsapp.feature_news.data.api.RssApiService
+import com.phoenix.newsapp.feature_news.data.repository.NewsRepositoryImpl
+import com.phoenix.newsapp.feature_news.domain.model.repository.NewsRepository
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import nl.adaptivity.xmlutil.serialization.KotlinxSerializationProvider
 import okhttp3.OkHttpClient
-import org.xmlpull.v1.XmlPullParserFactory
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -38,5 +38,11 @@ object NetworkModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): RssApiService {
         return retrofit.create(RssApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewsRepository(apiService: RssApiService): NewsRepository {
+        return NewsRepositoryImpl(apiService)
     }
 }

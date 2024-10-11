@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.serialization)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
@@ -57,7 +58,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
@@ -72,13 +72,17 @@ dependencies {
     implementation(libs.retrofit2)
     implementation(libs.serialization.core)
     implementation(libs.okhttp)
-    implementation(libs.hilt.android)
-    implementation(libs.hilt.compiler)
     implementation(libs.converter.kotlinx.serialization)
     implementation(libs.tikxml.core)
     implementation(libs.tikxml.annotation)
-    implementation(libs.tikxml.processor)
-    implementation(libs.retrofit.converter)
+    kapt(libs.tikxml.processor)
+    kapt(libs.tikxml.processor.common)
+    implementation(libs.tikxml.retrofit.converter)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.guava)
+    implementation(libs.kotlin.stdlib)
+    kapt(libs.hilt.compiler)
 }
