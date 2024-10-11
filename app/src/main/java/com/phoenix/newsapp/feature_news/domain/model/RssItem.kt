@@ -7,16 +7,16 @@ import com.tickaroo.tikxml.annotation.Xml
 data class RssItem(
 
     @PropertyElement
-    var title: String? = null,
+    val title: String,
 
     @PropertyElement
-    var link: String? = null,
+    val link: String,
 
     @PropertyElement
-    var description: String? = null,
+    val description: String,
 
     @PropertyElement
-    var pubDate: String? = null,
+    val pubDate: String,
 
 ) {
     // imageUrl is inside the description field and needs to be parsed

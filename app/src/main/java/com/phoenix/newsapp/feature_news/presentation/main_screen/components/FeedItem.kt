@@ -7,7 +7,7 @@ import com.phoenix.newsapp.feature_news.domain.model.RssItem
 
 @Composable
 fun FeedItem(item: RssItem) {
-    Text("${item.title}")
+    Text("${item.imageUrl}")
 }
 
 @Preview

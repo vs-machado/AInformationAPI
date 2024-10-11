@@ -30,11 +30,9 @@ class MainScreenViewModel @Inject constructor(
             runCatching {
                 newsRepository.getRssFeed()
             }.onSuccess { feed ->
-                Log.d("debug", feed.toString())
                 val processedItems = Parser().extractImageUrls(feed.channel.item)
                 _feedState.value = FeedState.Success(processedItems)
             }.onFailure { error ->
-                Log.d("debug", error.message.toString())
                 _feedState.value = FeedState.Error(error.message ?: "Unknown error occurred")
             }
         }

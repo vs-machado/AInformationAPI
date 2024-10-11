@@ -1,22 +1,24 @@
 package com.phoenix.newsapp.feature_news.domain.util
 
 import com.phoenix.newsapp.feature_news.domain.model.RssItem
-import java.util.regex.Pattern
+import org.jsoup.Jsoup
 
 class Parser {
 
     // Update the imageUrl if a matcher exists in the description field
     fun extractImageUrls(items: List<RssItem>): List<RssItem> {
-
-        val imgPattern = Pattern.compile("<img\\s+src=\"([^\"]+)\"")
-
         return items.map { item ->
-            val matcher = item.description?.let { imgPattern.matcher(it) }
+            item.description.let { description ->
+                // Decode HTML entities
+                val decodedHtml = description
+                    .replace("&lt;", "<")
+                    .replace("&gt;", ">")
+                    .replace("&quot;", "\"")
 
-            if (matcher != null) {
-                if(matcher.find()) {
-                    item.imageUrl = matcher.group(1) ?: "" // Group(1) returns only the content inside the <img> tag
-                }
+                val document = Jsoup.parse(decodedHtml)
+                val imgTag = document.select("img").first()
+
+                item.imageUrl = imgTag?.attr("src")
             }
             item
         }
