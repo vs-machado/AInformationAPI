@@ -87,4 +87,5 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.coil.network.http)
     implementation(libs.coil)
+    implementation(libs.jsoup)
 }
