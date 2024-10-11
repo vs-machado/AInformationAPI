@@ -85,4 +85,6 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.kotlin.stdlib)
     kapt(libs.hilt.compiler)
+    implementation(libs.coil.network.http)
+    implementation(libs.coil)
 }

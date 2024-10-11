@@ -20,7 +20,7 @@ navigationCompose = "2.8.2"
 guava = "33.3.1-jre"
 kotlinVersion = "2.0.20"
 hiltNavCompose = "1.2.0"
-tikxml-annotation = "0.8.13"
+coil = "3.0.0-rc01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +53,8 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavCompose" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil"}
+coil-network-http = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
