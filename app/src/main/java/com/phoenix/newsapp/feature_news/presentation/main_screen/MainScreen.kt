@@ -84,7 +84,7 @@ fun MainScreen(
                 content = {},
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(horizontal = 16.dp)
             )
         }
     ) { innerPadding ->

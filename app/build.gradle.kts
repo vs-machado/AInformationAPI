@@ -88,4 +88,5 @@ dependencies {
     implementation(libs.coil.network.http)
     implementation(libs.coil)
     implementation(libs.jsoup)
+    implementation(libs.paging.compose)
 }
