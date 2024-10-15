@@ -1,8 +1,12 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.phoenix.newsapp.feature_news.data.repository.DefaultPaginator
+import com.phoenix.newsapp.feature_news.domain.model.RssItem
 import com.phoenix.newsapp.feature_news.domain.model.repository.NewsRepository
 import com.phoenix.newsapp.feature_news.domain.util.Parser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,18 +27,60 @@ class MainScreenViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    fun fetchRssFeed() {
+    var state by mutableStateOf(ScreenState())
+
+    // Used to fetch the news feed during scrolling
+    private val paginator = DefaultPaginator (
+        initialKey = state.page,
+        onLoadUpdated = {
+            state = state.copy(isLoading = it)
+        },
+        onRequest = { nextPage ->
+            newsRepository.getItems(nextPage, 10)
+        },
+        getNextKey = {
+            state.page + 1
+        },
+        onError = {
+            state = state.copy(error = it?.localizedMessage)
+        },
+        onSuccess = { items, newKey ->
+            state = state.copy(
+                items = state.items + items,
+                page = newKey,
+                endReached = items.isEmpty()
+            )
+        }
+    )
+
+    /* When user is scrolling the feed the state is not changed to Loading to avoid showing
+     * the circular progress indicator used when launching the app. */
+    fun fetchRssFeed(isScrolling: Boolean) {
         viewModelScope.launch {
-            _feedState.value = FeedState.Loading
+            if(!isScrolling){
+                _feedState.value = FeedState.Loading
+            }
 
             runCatching {
-                newsRepository.getRssFeed()
-            }.onSuccess { feed ->
-                val processedItems = Parser().extractImageUrls(feed.channel.item)
+                paginator.loadNextItems()
+            }.onSuccess {
+                val processedItems = Parser().extractImageUrls(state.items)
                 _feedState.value = FeedState.Success(processedItems)
             }.onFailure { error ->
                 _feedState.value = FeedState.Error(error.message ?: "Unknown error occurred")
             }
         }
     }
+
+    init {
+        fetchRssFeed(isScrolling = false)
+    }
+
+    data class ScreenState(
+        val isLoading: Boolean = false,
+        val items: List<RssItem> = emptyList(),
+        val error: String? = null,
+        val endReached: Boolean = false,
+        val page: Int = 0
+    )
 }

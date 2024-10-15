@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -26,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -48,10 +50,6 @@ fun MainScreen(
     val feedState by viewModel.feedState.collectAsState()
     var searchText by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
-    
-    LaunchedEffect(Unit) {
-        viewModel.fetchRssFeed()
-    }
 
     Scaffold(
         topBar = {
@@ -110,7 +108,7 @@ fun MainScreen(
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         Button(
-                            onClick = { viewModel.fetchRssFeed() }
+                            onClick = { viewModel.fetchRssFeed(isScrolling = false) }
                         ) {
                             Text("Try Again")
                         }
@@ -123,14 +121,40 @@ fun MainScreen(
 }
 
 @Composable
-fun FeedContent(feed: List<RssItem>) {
-    LazyColumn {
+fun FeedContent(
+    feed: List<RssItem>,
+    viewModel: MainScreenViewModel = hiltViewModel()
+) {
+    val lazyListState = rememberLazyListState()
+    val state = viewModel.state
+
+    // When user reaches the last lazycolumn item the app fetches more news to the feed.
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.layoutInfo }
+            .collect { layoutInfo ->
+                if (lazyListState.isScrollInProgress) {
+                    if (layoutInfo.visibleItemsInfo.isNotEmpty()) {
+                        val lastVisibleItem = layoutInfo.visibleItemsInfo.last()
+                        val lastIndex = lazyListState.layoutInfo.totalItemsCount - 1
+
+                        if (lastVisibleItem.index == lastIndex) {
+                            viewModel.fetchRssFeed(isScrolling = true)
+                        }
+                    }
+
+
+                }
+            }
+    }
+
+    LazyColumn(state = lazyListState) {
         items(feed) { item ->
             FeedItem(item)
         }
     }
 }
 
+// Displays a loading indicator when fetching the news
 @Composable
 fun LoadingIndicator() {
     Box(

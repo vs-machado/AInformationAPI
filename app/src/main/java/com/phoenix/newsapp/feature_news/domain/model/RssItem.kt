@@ -3,6 +3,10 @@ package com.phoenix.newsapp.feature_news.domain.model
 import com.tickaroo.tikxml.annotation.PropertyElement
 import com.tickaroo.tikxml.annotation.Xml
 
+/*
+ * Data class used to get individual news data.
+ */
+
 @Xml(name = "item")
 data class RssItem(
 
