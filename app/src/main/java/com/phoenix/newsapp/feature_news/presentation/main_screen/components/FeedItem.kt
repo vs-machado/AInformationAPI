@@ -1,19 +1,17 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen.components
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -25,11 +23,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.phoenix.newsapp.feature_news.domain.model.RssItem
-import com.phoenix.newsapp.feature_news.domain.util.TimeAgoUtil
+import com.phoenix.newsapp.feature_news.domain.util.DateUtil
 
 @Composable
-fun FeedItem(item: RssItem) {
-    Column {
+fun FeedItem(
+    item: RssItem,
+    onItemClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.clickable { onItemClick() }
+    ) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(vertical = 16.dp)
@@ -56,7 +59,7 @@ fun FeedItem(item: RssItem) {
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = TimeAgoUtil().getTimeAgo(item.pubDate),
+                text = DateUtil().getTimeAgo(item.pubDate),
                 fontSize = 12.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(horizontal = 18.dp)
@@ -66,10 +69,10 @@ fun FeedItem(item: RssItem) {
     }
 }
 
-@Preview
-@Composable
-fun PreviewFeedItem() {
-    FeedItem(
-        RssItem("Title", "http://google.com/", "Hello world!", "10/10/2024")
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewFeedItem() {
+//    FeedItem(
+//        RssItem("Title", "http://google.com/", "Hello world!", "10/10/2024")
+//    )
+//}

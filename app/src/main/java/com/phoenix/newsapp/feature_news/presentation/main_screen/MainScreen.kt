@@ -46,7 +46,8 @@ import com.phoenix.newsapp.feature_news.presentation.main_screen.components.Feed
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: MainScreenViewModel = hiltViewModel()
+    viewModel: MainScreenViewModel = hiltViewModel(),
+    onNavigationToNewsDetail: (RssItem) -> Unit
 ) {
     val feedState by viewModel.filteredFeed.collectAsState()
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -110,7 +111,10 @@ fun MainScreen(
                 is FeedState.Initial -> {}
                 is FeedState.Loading -> LoadingIndicator()
                 is FeedState.Success -> {
-                    FeedContent(feed = state.items)
+                    FeedContent(
+                        feed = state.items,
+                        onNavigationToNewsDetail = onNavigationToNewsDetail
+                    )
                 }
                 is FeedState.Error -> {
                     Column(
@@ -138,7 +142,8 @@ fun MainScreen(
 @Composable
 fun FeedContent(
     feed: List<RssItem>,
-    viewModel: MainScreenViewModel = hiltViewModel()
+    viewModel: MainScreenViewModel = hiltViewModel(),
+    onNavigationToNewsDetail: (RssItem) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -163,7 +168,10 @@ fun FeedContent(
 
     LazyColumn(state = lazyListState) {
         items(feed) { item ->
-            FeedItem(item)
+            FeedItem(
+                item = item,
+                onItemClick = { onNavigationToNewsDetail(item) }
+            )
         }
     }
 }
