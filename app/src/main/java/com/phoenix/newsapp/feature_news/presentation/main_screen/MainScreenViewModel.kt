@@ -11,8 +11,11 @@ import com.phoenix.newsapp.feature_news.domain.model.repository.NewsRepository
 import com.phoenix.newsapp.feature_news.domain.util.Parser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,6 +31,22 @@ class MainScreenViewModel @Inject constructor(
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     var state by mutableStateOf(ScreenState())
+
+    val filteredFeed = combine(feedState, searchQuery) { state, query ->
+        when(state){
+            is FeedState.Success -> {
+                state.copy(items = state.items.filter { item ->
+                    item.title.contains(query, ignoreCase = true) ||
+                            item.description.contains(query, ignoreCase = true)
+                })
+            }
+            else -> state
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FeedState.Initial)
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
 
     // Used to fetch the news feed during scrolling
     private val paginator = DefaultPaginator (

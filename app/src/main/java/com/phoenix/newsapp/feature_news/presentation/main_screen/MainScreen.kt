@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,7 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.phoenix.newsapp.feature_news.domain.model.RssItem
 import com.phoenix.newsapp.feature_news.presentation.main_screen.components.FeedItem
 
-/**
+/**k
  * The main screen shows a search bar to allow user to query specific news.
  * A news feed is automatically shown if the fetch was successful,
  * if there is an error during the fetch, it displays an error and
@@ -47,7 +48,7 @@ import com.phoenix.newsapp.feature_news.presentation.main_screen.components.Feed
 fun MainScreen(
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
-    val feedState by viewModel.feedState.collectAsState()
+    val feedState by viewModel.filteredFeed.collectAsState()
     var searchText by rememberSaveable { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -59,20 +60,34 @@ fun MainScreen(
                         query = searchText,
                         onQueryChange = {
                             searchText = it
+                            viewModel.updateSearchQuery(it)
                         },
                         onSearch = { 
                             expanded = false 
-                            //Query news by text
+                            viewModel.updateSearchQuery(searchText)
                        },
                         expanded = false,
                         onExpandedChange = { expanded = false},
                         placeholder = { Text("Search news") },
                         leadingIcon = {
-                            IconButton(onClick = { /* Query news by text*/ }) {
+                            IconButton(onClick = {}) {
                                 Icon(
                                     imageVector = Icons.Default.Search,
                                     contentDescription = "Search"
                                 )
+                            }
+                        },
+                        trailingIcon = {
+                            if(searchText.isNotEmpty()){
+                                IconButton(onClick = {
+                                    searchText = ""
+                                    viewModel.updateSearchQuery("")
+                                }){
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = "Clear search"
+                                    )
+                                }
                             }
                         }
                     )
@@ -126,7 +141,6 @@ fun FeedContent(
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val lazyListState = rememberLazyListState()
-    val state = viewModel.state
 
     // When user reaches the last lazycolumn item the app fetches more news to the feed.
     LaunchedEffect(lazyListState) {
