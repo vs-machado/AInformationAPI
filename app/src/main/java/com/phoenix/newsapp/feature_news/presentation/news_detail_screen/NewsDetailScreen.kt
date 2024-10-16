@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.google.ai.client.generativeai.BuildConfig
 import com.phoenix.newsapp.feature_news.domain.model.RssItem
 import com.phoenix.newsapp.feature_news.domain.util.DateUtil
 import com.phoenix.newsapp.feature_news.domain.util.Parser

@@ -47,7 +47,8 @@ import com.phoenix.newsapp.feature_news.presentation.main_screen.components.Feed
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel = hiltViewModel(),
-    onNavigationToNewsDetail: (RssItem) -> Unit
+    onNavigationToNewsDetail: (RssItem) -> Unit,
+    onNavigationToAISummaryScreen: (RssItem, String) -> Unit
 ) {
     val feedState by viewModel.filteredFeed.collectAsState()
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -113,7 +114,8 @@ fun MainScreen(
                 is FeedState.Success -> {
                     FeedContent(
                         feed = state.items,
-                        onNavigationToNewsDetail = onNavigationToNewsDetail
+                        onNavigationToNewsDetail = onNavigationToNewsDetail,
+                        onNavigationToAISummaryScreen = onNavigationToAISummaryScreen
                     )
                 }
                 is FeedState.Error -> {
@@ -143,7 +145,8 @@ fun MainScreen(
 fun FeedContent(
     feed: List<RssItem>,
     viewModel: MainScreenViewModel = hiltViewModel(),
-    onNavigationToNewsDetail: (RssItem) -> Unit
+    onNavigationToNewsDetail: (RssItem) -> Unit,
+    onNavigationToAISummaryScreen: (RssItem, String) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -170,7 +173,10 @@ fun FeedContent(
         items(feed) { item ->
             FeedItem(
                 item = item,
-                onItemClick = { onNavigationToNewsDetail(item) }
+                onItemClick = { onNavigationToNewsDetail(item) },
+                onNavigateToAISummaryScreen = { summary ->
+                    onNavigationToAISummaryScreen(item, summary)
+                }
             )
         }
     }

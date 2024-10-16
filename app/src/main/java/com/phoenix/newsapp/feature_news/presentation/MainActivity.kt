@@ -25,15 +25,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             NewsAppTheme {
                 val navController = rememberNavController()
-
                 NavHost(
                     navController = navController,
                     startDestination = Home
                 ) {
                     composable<Home> {
-                        MainScreen(onNavigationToNewsDetail = { item ->
-                            navController.navigate(NewsDetail(item.title, item.description, item.pubDate, item.imageUrl))
-                        })
+                        MainScreen(
+                            onNavigationToNewsDetail = { item ->
+                                 navController.navigate(NewsDetail(item.title, item.description, item.pubDate, item.imageUrl))
+                            },
+                            onNavigationToAISummaryScreen = { item, summary ->
+                                navController.navigate(NewsDetail(item.title, summary, item.pubDate, item.imageUrl))
+                            }
+                        )
                     }
                     composable<NewsDetail>(
                         enterTransition = { slideInVertically(initialOffsetY = { it }) },
