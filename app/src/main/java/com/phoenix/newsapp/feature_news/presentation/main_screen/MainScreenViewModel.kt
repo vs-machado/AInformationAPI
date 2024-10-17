@@ -6,11 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.BlockThreshold
-import com.google.ai.client.generativeai.type.HarmCategory
-import com.google.ai.client.generativeai.type.SafetySetting
-import com.google.ai.client.generativeai.type.generationConfig
-import com.phoenix.newsapp.BuildConfig
 import com.phoenix.newsapp.feature_news.data.repository.DefaultPaginator
 import com.phoenix.newsapp.feature_news.domain.model.RssItem
 import com.phoenix.newsapp.feature_news.domain.model.repository.NewsRepository

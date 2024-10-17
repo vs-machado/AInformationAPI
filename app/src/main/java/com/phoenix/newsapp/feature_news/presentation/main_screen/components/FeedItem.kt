@@ -1,6 +1,7 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen.components
 
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -132,7 +133,8 @@ fun FeedItem(
                     openAlertDialog.value = false
                     onNavigateToAISummaryScreen(summary)
                     viewModel.resetAISummaryState()
-                }
+                },
+                resetAISummaryState = { viewModel.resetAISummaryState() }
             )
         }
     }
@@ -148,7 +150,8 @@ fun AISummaryDialog(
     currentSummarizedItemId: String,
     icon: ImageVector,
     aiSummaryState: AISummaryState,
-    onAISummaryGenerated: (String) -> Unit
+    onAISummaryGenerated: (String) -> Unit,
+    resetAISummaryState: () -> Unit
 ) {
     AlertDialog(
         icon = {
@@ -164,31 +167,35 @@ fun AISummaryDialog(
                     Column {
                         Text(text = dialogText)
                         Spacer(modifier = Modifier.height(8.dp))
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                     }
                 }
                 aiSummaryState is AISummaryState.Success && currentItemId == currentSummarizedItemId -> {
                     onAISummaryGenerated(aiSummaryState.summary)
                     Text("Summary generated successfully!")
                 }
-                aiSummaryState is AISummaryState.Error -> "Error: ${aiSummaryState.message}"}
+                aiSummaryState is AISummaryState.Error -> Text(text = "Error: ${aiSummaryState.message}")}
+            Log.d("debug", aiSummaryState.toString())
         },
         onDismissRequest = {
             onDismissRequest()
         },
         confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
+            if(aiSummaryState !is AISummaryState.Error) {
+                TextButton(
+                    onClick = {
+                        onConfirmation()
+                    }
+                ) {
+                    Text("Confirm")
                 }
-            ) {
-                Text("Confirm")
             }
         },
         dismissButton = {
             TextButton(
                 onClick = {
                     onDismissRequest()
+                    resetAISummaryState()
                 }
             ) {
                 Text("Dismiss")
