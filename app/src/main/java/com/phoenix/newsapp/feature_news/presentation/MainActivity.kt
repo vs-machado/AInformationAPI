@@ -7,6 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,7 +30,8 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Home
+                    startDestination = Home,
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
                 ) {
                     composable<Home> {
                         MainScreen(
@@ -46,7 +50,9 @@ class MainActivity : ComponentActivity() {
                         popExitTransition = { slideOutVertically(targetOffsetY = { it }) }
                     ) { backStackEntry ->
                         val newsDetail: NewsDetail = backStackEntry.toRoute()
-                        NewsDetailScreen(newsDetail.title, newsDetail.description, newsDetail.pubDate, newsDetail.imageUrl)
+                        NewsDetailScreen(
+                            onNavigateUp = { navController.navigateUp() },
+                            newsDetail.title, newsDetail.description, newsDetail.pubDate, newsDetail.imageUrl)
                     }
                 }
             }

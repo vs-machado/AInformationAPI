@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
@@ -124,8 +123,8 @@ class MainScreenViewModel @Inject constructor(
             _currentSummarizedItemId.value = itemId
 
             runCatching {
-                val response = model.generateContent("Write a summary about this news in $userLanguage that not exceeds 50 lines. In the beginning of the text," +
-                        "you must write [AI GENERATED SUMMARY], then put the summary one line below. Write it like a website report. Use paragraphs and indentation" +
+                val response = model.generateContent("Write a summary about this news in $userLanguage that not exceeds 50 lines. In the beginning of the text " +
+                        "put the summary in the first line. Write it like a website report. Use paragraphs and indentation" +
                         "when needed. Ensure that the summary reduces the quantity of lines in at least 30% when the news has more than 20 lines." +
                         "If the author's name is in the news, include it in the first line by writing Publisher: (publisher name) ." +
                         "The news: $newsContent")
