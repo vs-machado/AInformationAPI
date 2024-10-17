@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,10 +56,12 @@ fun FeedItem(
     val openAlertDialog = remember { mutableStateOf(false) }
     val aiSummaryState = viewModel.aiSummaryState.collectAsStateWithLifecycle(initialValue = AISummaryState.Initial)
     val currentSummarizedItemId = viewModel.currentSummarizedItemId.collectAsStateWithLifecycle()
-
+    val context = LocalContext.current
 
     Column(
-        modifier = Modifier.clickable { onItemClick() }
+        modifier = Modifier.clickable {
+            viewModel.openWebPage(item.link, context)
+        }
     ) {
         Column(
             verticalArrangement = Arrangement.Center,

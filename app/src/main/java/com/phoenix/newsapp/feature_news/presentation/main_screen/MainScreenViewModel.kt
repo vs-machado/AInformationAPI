@@ -1,8 +1,12 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
@@ -139,6 +143,13 @@ class MainScreenViewModel @Inject constructor(
                 _currentSummarizedItemId.value = ""
             }
         }
+    }
+
+    fun openWebPage(url: String, context: Context) {
+        val webpage: Uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, webpage)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 
     fun resetAISummaryState() {
