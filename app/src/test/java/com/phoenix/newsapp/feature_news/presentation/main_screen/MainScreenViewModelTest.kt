@@ -1,9 +1,12 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.common.truth.Truth.assertThat
+import com.phoenix.newsapp.feature_news.data.repository.FakeNewsRepository
 import com.phoenix.newsapp.feature_news.domain.model.repository.NewsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,18 +32,22 @@ class MainScreenViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    @Mock private lateinit var newsRepository: NewsRepository
     @Mock private lateinit var model: GenerativeModel
     @Mock private lateinit var generateContentResponse: GenerateContentResponse
     @Mock private lateinit var candidate: com.google.ai.client.generativeai.type.Candidate
 
+    private lateinit var state: MutableState<MainScreenViewModel.ScreenState>
     private lateinit var viewModel: MainScreenViewModel
+    private lateinit var newsRepository: NewsRepository
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
         Dispatchers.setMain(testDispatcher)
+
+        newsRepository = FakeNewsRepository()
         viewModel = MainScreenViewModel(newsRepository, model)
+        state = mutableStateOf(MainScreenViewModel.ScreenState(isLoading = false, endReached = false))
     }
 
     @After

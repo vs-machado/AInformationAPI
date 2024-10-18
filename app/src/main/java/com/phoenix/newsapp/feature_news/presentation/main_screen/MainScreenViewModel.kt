@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -70,7 +71,7 @@ class MainScreenViewModel @Inject constructor(
     }
 
     // Used to fetch the news feed during scrolling
-    private val paginator = DefaultPaginator (
+    private val paginator = DefaultPaginator(
         initialKey = state.page,
         onLoadUpdated = {
             state = state.copy(isLoading = it)
@@ -81,14 +82,24 @@ class MainScreenViewModel @Inject constructor(
         getNextKey = {
             state.page + 1
         },
-        onError = {
-            state = state.copy(error = it?.localizedMessage)
+        onError = { error ->
+            state = when(error){
+                is UnknownHostException -> {
+                    _feedState.value = FeedState.Error("Connection error occurred")
+                    state.copy(error = "Connection error occurred")
+                }
+
+                else -> {
+                    state.copy(error = error?.localizedMessage)
+                }
+            }
         },
         onSuccess = { items, newKey ->
             state = state.copy(
                 items = state.items + items,
                 page = newKey,
-                endReached = items.isEmpty()
+                endReached = items.isEmpty(),
+                error = null
             )
         }
     )
@@ -97,18 +108,19 @@ class MainScreenViewModel @Inject constructor(
      * the circular progress indicator used when launching the app. */
     fun fetchRssFeed(isScrolling: Boolean) {
         viewModelScope.launch {
-            if(!isScrolling){
+            if (!isScrolling) {
                 _feedState.value = FeedState.Loading
             }
 
-            runCatching {
-                paginator.loadNextItems()
-            }.onSuccess {
-                val processedItems = Parser().extractImageUrls(state.items)
-                _feedState.value = FeedState.Success(processedItems)
-            }.onFailure { error ->
-                _feedState.value = FeedState.Error(error.message ?: "Unknown error occurred")
+            paginator.loadNextItems()
+
+            // If there's an UnknownHostException during the news fetch the FeedState is Error (defined in paginator instance)
+            if (state.error != null) {
+                return@launch
             }
+
+            val processedItems = Parser().extractImageUrls(state.items)
+            _feedState.value = FeedState.Success(processedItems)
         }
     }
 
