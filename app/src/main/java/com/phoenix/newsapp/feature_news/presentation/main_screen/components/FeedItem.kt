@@ -2,6 +2,7 @@ package com.phoenix.newsapp.feature_news.presentation.main_screen.components
 
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -103,15 +104,20 @@ fun FeedItem(
                     onClick = { openAlertDialog.value = true },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    border = BorderStroke(1.dp, Color(0xFF25B24E))
                 ){
                     Icon(
                         painter = painterResource(id = R.drawable.ic_gemini),
                         contentDescription = "Generate AI summary",
+                        tint = Color(0xFF25B24E),
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Generate AI summary")
+                    Text(
+                        text = "Generate AI summary",
+                        color = Color.White
+                    )
                 }
             }
         }
@@ -158,11 +164,12 @@ fun AISummaryDialog(
 ) {
     AlertDialog(
         icon = {
-            Icon(icon, contentDescription = "Example Icon")
+            Icon(icon, contentDescription = "AI resource icon", tint = Color(0xFF25B24E))
         },
         title = {
             Text(text = dialogTitle)
         },
+        containerColor = Color(0xFF1E1F21),
         text = {
             when {
                 aiSummaryState is AISummaryState.Initial -> Text(text = dialogText)
@@ -170,7 +177,7 @@ fun AISummaryDialog(
                     Column {
                         Text(text = dialogText)
                         Spacer(modifier = Modifier.height(8.dp))
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally), color = Color(0xFF25B24E))
                     }
                 }
                 aiSummaryState is AISummaryState.Success && currentItemId == currentSummarizedItemId -> {
@@ -190,7 +197,7 @@ fun AISummaryDialog(
                         onConfirmation()
                     }
                 ) {
-                    Text("Confirm")
+                    Text("Confirm", color = Color(0xFF25B24E))
                 }
             }
         },
@@ -201,7 +208,7 @@ fun AISummaryDialog(
                     resetAISummaryState()
                 }
             ) {
-                Text("Dismiss")
+                Text("Dismiss", color = Color(0xFF25B24E))
             }
         }
     )
