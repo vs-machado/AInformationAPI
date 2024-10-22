@@ -1,5 +1,6 @@
 package com.phoenix.newsapp.feature_news.presentation.news_detail_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,12 +45,16 @@ fun NewsDetailScreen(
                     IconButton(onClick = { onNavigateUp() }){
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go back to the news feed")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Black
+                )
             )
         }
     ){ innerPadding ->
         Column(
             modifier = Modifier
+                .background(Color.Black)
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
