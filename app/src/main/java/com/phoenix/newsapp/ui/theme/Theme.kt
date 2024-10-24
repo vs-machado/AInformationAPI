@@ -1,6 +1,5 @@
 package com.phoenix.newsapp.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,7 +66,7 @@ fun NewsAppTheme(
         else -> LightColorScheme
     }
 
-    val searchBarColors = if (darkTheme) {
+    if (darkTheme) {
         SearchBarColors(
             containerColor = Color(0xFF242B31),
             dividerColor = Color(0xFF20D16E)

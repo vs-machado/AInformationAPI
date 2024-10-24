@@ -23,10 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.phoenix.newsapp.R
 import com.phoenix.newsapp.feature_news.domain.util.DateUtil
 import com.phoenix.newsapp.feature_news.domain.util.Parser
 
@@ -39,14 +42,16 @@ fun NewsDetailScreen(
      pubDate: String,
      imageUrl: String?
 ) {
+    val context = LocalContext.current
+
     Scaffold (
         topBar = {
             Column {
                 TopAppBar(
-                    title = { Text(text = "AI generated summary") },
+                    title = { Text(text = stringResource(R.string.ai_generated_summary)) },
                     navigationIcon = {
                         IconButton(onClick = { onNavigateUp() }){
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go back to the news feed")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back_news_feed))
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -71,14 +76,14 @@ fun NewsDetailScreen(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = DateUtil().formatPubDate(pubDate),
+                text = DateUtil(context = context).formatPubDate(pubDate),
                 fontSize = 14.sp,
                 color = Color.Gray
             )
             Spacer(modifier = Modifier.height(16.dp))
             AsyncImage(
                 model = imageUrl,
-                contentDescription = "News image",
+                contentDescription = stringResource(R.string.news_image),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(160.dp),

@@ -1,7 +1,6 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,9 +33,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,7 +76,7 @@ fun MainScreen(
                     painter = if(isSystemInDarkTheme())
                         painterResource(id = R.drawable.black_logo)
                     else painterResource(id = R.drawable.white_logo),
-                    contentDescription = "App logo",
+                    contentDescription = stringResource(R.string.app_logo),
                     modifier = Modifier
                         .align(Alignment.Center)
                         .height(24.dp)
@@ -129,7 +128,7 @@ fun MainScreen(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             Text(
-                                text = "Connection error occurred.",
+                                text = stringResource(R.string.connection_error),
                                 modifier = Modifier.padding(bottom = 16.dp),
                                 color = MaterialTheme.colorScheme.onBackground
                             )
@@ -140,7 +139,7 @@ fun MainScreen(
                                     containerColor = MaterialTheme.colorScheme.secondary
                                 )
                             ) {
-                                Text("Try Again")
+                                Text(stringResource(R.string.try_again))
                             }
                         }
                     }
@@ -178,7 +177,7 @@ fun FeedContent(
     LazyColumn(state = lazyListState) {
         item {
             Text(
-                text = "Latest news",
+                text = stringResource(R.string.latest_news),
                 fontWeight = FontWeight.Medium,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(start = 20.dp, top = 8.dp),

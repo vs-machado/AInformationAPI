@@ -1,7 +1,6 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,10 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.phoenix.newsapp.R
 
 @Composable
 fun SearchBar(
@@ -80,7 +81,7 @@ fun SearchBar(
 
         if(searchText.isEmpty()){
             Text(
-                text = "Search...",
+                text = stringResource(R.string.search___),
                 color = Color(0xFF70777B), // Hint color
                 fontSize = 16.sp,
                 modifier = Modifier
@@ -101,7 +102,7 @@ fun SearchBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Clear",
+                    contentDescription = stringResource(R.string.clear),
                     tint = MaterialTheme.colorScheme.outline
                 )
             }
@@ -109,7 +110,7 @@ fun SearchBar(
 
         Icon(
             imageVector = Icons.Default.Search,
-            contentDescription = "Search",
+            contentDescription = stringResource(R.string.search_icon),
             tint = Color(0xFF70777B),
             modifier = Modifier
                 .align(Alignment.CenterStart)

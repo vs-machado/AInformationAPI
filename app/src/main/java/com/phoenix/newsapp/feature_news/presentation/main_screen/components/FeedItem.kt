@@ -1,7 +1,6 @@
 package com.phoenix.newsapp.feature_news.presentation.main_screen.components
 
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,11 +32,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -90,7 +88,7 @@ fun FeedItem(
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = DateUtil().getTimeAgo(item.pubDate),
+                text = DateUtil(context).getTimeAgo(item.pubDate),
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.Gray,
                 modifier = Modifier.padding(horizontal = 18.dp)
@@ -109,13 +107,13 @@ fun FeedItem(
                 ){
                     Icon(
                         painter = painterResource(id = R.drawable.ic_gemini),
-                        contentDescription = "Generate AI summary",
+                        contentDescription = stringResource(R.string.generate_ai_summary),
                         tint = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Generate AI summary",
+                        text = stringResource(R.string.generate_ai_summary),
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -131,9 +129,8 @@ fun FeedItem(
                 onConfirmation = {
                     viewModel.generateAISummary(item.description, Locale.getDefault().language.toString(), item.id)
                 },
-                dialogTitle = "Generate AI summary",
-                dialogText = "When you click the confirm button, AI will be used to create a summary of the news item." +
-                        " Always read the full story before spreading information.",
+                dialogTitle = stringResource(R.string.generate_ai_summary),
+                dialogText = stringResource(R.string.ai_summary_dialog_text),
                 currentItemId = item.id,
                 currentSummarizedItemId = currentSummarizedItemId.value!!,
                 icon = ImageVector.vectorResource(id = R.drawable.ic_gemini),
@@ -164,7 +161,7 @@ fun AISummaryDialog(
 ) {
     AlertDialog(
         icon = {
-            Icon(icon, contentDescription = "AI resource icon", tint = Color(0xFF25B24E))
+            Icon(icon, contentDescription = stringResource(R.string.ai_resource_icon), tint = Color(0xFF25B24E))
         },
         title = {
             Text(text = dialogTitle)
@@ -182,10 +179,10 @@ fun AISummaryDialog(
                 }
                 aiSummaryState is AISummaryState.Success && currentItemId == currentSummarizedItemId -> {
                     onAISummaryGenerated(aiSummaryState.summary)
-                    Text("Summary generated successfully!")
+                    Text(stringResource(R.string.summary_successfully_generated))
                 }
-                aiSummaryState is AISummaryState.Error -> Text(text = "Error: ${aiSummaryState.message}")}
-            Log.d("debug", aiSummaryState.toString())
+                aiSummaryState is AISummaryState.Error -> Text(text = stringResource(R.string.ai_summary_error, aiSummaryState.message))
+            }
         },
         onDismissRequest = {
             onDismissRequest()
@@ -197,7 +194,7 @@ fun AISummaryDialog(
                         onConfirmation()
                     }
                 ) {
-                    Text("Confirm", color = Color(0xFF25B24E))
+                    Text(stringResource(R.string.confirm), color = MaterialTheme.colorScheme.primary)
                 }
             }
         },
@@ -208,7 +205,7 @@ fun AISummaryDialog(
                     resetAISummaryState()
                 }
             ) {
-                Text("Dismiss", color = Color(0xFF25B24E))
+                Text(stringResource(R.string.dismiss), color = MaterialTheme.colorScheme.primary)
             }
         }
     )

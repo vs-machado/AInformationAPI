@@ -1,12 +1,16 @@
 package com.phoenix.newsapp.feature_news.domain.util
 
+import android.content.Context
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
+import com.phoenix.newsapp.R
 import java.util.Date
 import java.util.Locale
 
-class DateUtil {
+class DateUtil(
+    private val context: Context
+) {
 
     fun getTimeAgo(pubDate: String): String {
         val dateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
@@ -25,9 +29,9 @@ class DateUtil {
             val hoursAgo = (differenceInMillis % daysInMillis) / hoursInMillis
 
             return when {
-                daysAgo > 0 -> "${daysAgo}d ago"
-                hoursAgo > 0 -> "${hoursAgo}h ago"
-                else -> "Just now"
+                daysAgo > 0 -> context.getString(R.string.days_ago_format, daysAgo)
+                hoursAgo > 0 -> context.getString(R.string.hours_ago_format, hoursAgo)
+                else -> context.getString(R.string.just_now)
             }
         }
 
