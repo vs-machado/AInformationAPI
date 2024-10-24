@@ -11,8 +11,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -39,25 +41,28 @@ fun NewsDetailScreen(
 ) {
     Scaffold (
         topBar = {
-            TopAppBar(
-                title = { Text(text = "AI generated summary") },
-                navigationIcon = {
-                    IconButton(onClick = { onNavigateUp() }){
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go back to the news feed")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black
+            Column {
+                TopAppBar(
+                    title = { Text(text = "AI generated summary") },
+                    navigationIcon = {
+                        IconButton(onClick = { onNavigateUp() }){
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go back to the news feed")
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
                 )
-            )
+                HorizontalDivider(color = Color(0xFF323335))
+            }
         }
     ){ innerPadding ->
         Column(
             modifier = Modifier
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .padding(16.dp)
         ){
             Text(
                 text = title,

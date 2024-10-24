@@ -3,25 +3,41 @@ package com.phoenix.newsapp.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = DarkOutlineColor,
+    background = DarkBackground,
+    surface = DarkSearchBarBackground,
+    surfaceVariant = DarkDialogContainerColor,
+    onBackground = DarkTextColor,
+    onSurface = DarkTextColor,
+    secondary = DarkButtonColor,
+    onSecondary = DarkButtonTextColor,
+    onSurfaceVariant = DarkTextColor,
+    outline = DarkOutlineColor
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
+    primary = LightOutlineColor,
+    background = LightBackground,
+    surface = LightSearchBarBackground,
+    surfaceVariant = LightDialogContainerColor,
+    onBackground = LightTextColor,
+    onSurface = LightTextColor,
+    secondary = LightButtonColor,
+    onSecondary = LightButtonTextColor,
+    onSurfaceVariant = LightTextColor,
+    outline = LightOutlineColor
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
@@ -33,6 +49,7 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -48,6 +65,18 @@ fun NewsAppTheme(
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+
+    val searchBarColors = if (darkTheme) {
+        SearchBarColors(
+            containerColor = Color(0xFF242B31),
+            dividerColor = Color(0xFF20D16E)
+        )
+    } else {
+        SearchBarColors(
+            containerColor = Color.Gray,
+            dividerColor = Color.Gray
+        )
     }
 
     MaterialTheme(

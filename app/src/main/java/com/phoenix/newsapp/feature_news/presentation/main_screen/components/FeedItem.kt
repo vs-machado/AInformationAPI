@@ -18,6 +18,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -81,8 +82,7 @@ fun FeedItem(
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = item.title,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(horizontal = 18.dp)
                     .fillMaxWidth(),
@@ -91,7 +91,7 @@ fun FeedItem(
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = DateUtil().getTimeAgo(item.pubDate),
-                fontSize = 12.sp,
+                style = MaterialTheme.typography.labelSmall,
                 color = Color.Gray,
                 modifier = Modifier.padding(horizontal = 18.dp)
             )
@@ -105,18 +105,18 @@ fun FeedItem(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
-                    border = BorderStroke(1.dp, Color(0xFF25B24E))
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ){
                     Icon(
                         painter = painterResource(id = R.drawable.ic_gemini),
                         contentDescription = "Generate AI summary",
-                        tint = Color(0xFF25B24E),
+                        tint = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Generate AI summary",
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
@@ -169,7 +169,7 @@ fun AISummaryDialog(
         title = {
             Text(text = dialogTitle)
         },
-        containerColor = Color(0xFF1E1F21),
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
         text = {
             when {
                 aiSummaryState is AISummaryState.Initial -> Text(text = dialogText)

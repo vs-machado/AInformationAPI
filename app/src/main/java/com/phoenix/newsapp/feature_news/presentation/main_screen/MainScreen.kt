@@ -2,6 +2,7 @@ package com.phoenix.newsapp.feature_news.presentation.main_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,16 +66,17 @@ fun MainScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.Black)
                     .padding(
                         top = WindowInsets.systemBars
                             .asPaddingValues()
                             .calculateTopPadding()
                     )
                     .padding(top = 16.dp)
-            ){
+            ) {
                 Image(
-                    painter = painterResource(id = R.drawable.black_logo),
+                    painter = if(isSystemInDarkTheme())
+                        painterResource(id = R.drawable.black_logo)
+                    else painterResource(id = R.drawable.white_logo),
                     contentDescription = "App logo",
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -87,27 +91,23 @@ fun MainScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(color = Color.Black)
         ) {
             var searchQuery by remember { mutableStateOf("") }
 
             SearchBar(
-                onSearchTextChanged = { newQuery ->
-                    searchQuery = newQuery
-                },
+                onSearchTextChanged = { newQuery -> searchQuery = newQuery },
                 horizontalPadding = 16.dp,
                 verticalPadding = 8.dp,
-                backgroundColor = Color(0xFF242B31),
-                cursorBrushColor = SolidColor(Color(0xFF20D16E)),
-                handleColor = Color(0xFF20D16E)
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                cursorBrushColor = SolidColor(MaterialTheme.colorScheme.secondary),
+                handleColor = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(8.dp))
             Box(
                 modifier = Modifier
-                    .background(Color.Black)
                     .fillMaxSize()
             ) {
-                when(val state = feedState) {
+                when (val state = feedState) {
                     is FeedState.Initial -> {}
                     is FeedState.Loading -> LoadingIndicator()
                     is FeedState.Success -> {
@@ -130,15 +130,19 @@ fun MainScreen(
                         ) {
                             Text(
                                 text = "Connection error occurred.",
-                                modifier = Modifier.padding(bottom = 16.dp)
+                                modifier = Modifier.padding(bottom = 16.dp),
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                             Button(
-                                onClick = { viewModel.fetchRssFeed(isScrolling = false) }
+                                onClick = { viewModel.fetchRssFeed(isScrolling = false) },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                                    containerColor = MaterialTheme.colorScheme.secondary
+                                )
                             ) {
                                 Text("Try Again")
                             }
                         }
-
                     }
                 }
             }
@@ -155,7 +159,6 @@ fun FeedContent(
 ) {
     val lazyListState = rememberLazyListState()
 
-    // When user reaches the last lazycolumn item the app fetches more news to the feed.
     LaunchedEffect(lazyListState) {
         snapshotFlow { lazyListState.layoutInfo }
             .collect { layoutInfo ->
@@ -168,8 +171,6 @@ fun FeedContent(
                             viewModel.fetchRssFeed(isScrolling = true)
                         }
                     }
-
-
                 }
             }
     }
@@ -180,7 +181,8 @@ fun FeedContent(
                 text = "Latest news",
                 fontWeight = FontWeight.Medium,
                 fontSize = 24.sp,
-                modifier = Modifier.padding(start = 20.dp, top = 8.dp)
+                modifier = Modifier.padding(start = 20.dp, top = 8.dp),
+                color = MaterialTheme.colorScheme.onBackground // Using onBackground for text color
             )
         }
         items(feed) { item ->
@@ -195,13 +197,12 @@ fun FeedContent(
     }
 }
 
-// Displays a loading indicator when fetching the news
 @Composable
 fun LoadingIndicator() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(color = Color(0xFF25B24E))
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.secondary) // Using secondary color for loading indicator
     }
 }

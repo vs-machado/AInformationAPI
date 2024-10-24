@@ -8,7 +8,9 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,33 +28,39 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NewsAppTheme {
+            NewsAppTheme(dynamicColor = false) {
                 val navController = rememberNavController()
-                NavHost(
-                    navController = navController,
-                    startDestination = Home,
-                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
+
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    composable<Home> {
-                        MainScreen(
-                            onNavigationToNewsDetail = { item ->
-                                 navController.navigate(NewsDetail(item.title, item.description, item.pubDate, item.imageUrl))
-                            },
-                            onNavigationToAISummaryScreen = { item, summary ->
-                                navController.navigate(NewsDetail(item.title, summary, item.pubDate, item.imageUrl))
-                            }
-                        )
-                    }
-                    composable<NewsDetail>(
-                        enterTransition = { slideInVertically(initialOffsetY = { it }) },
-                        exitTransition = { slideOutVertically(targetOffsetY = { it }) },
-                        popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
-                        popExitTransition = { slideOutVertically(targetOffsetY = { it }) }
-                    ) { backStackEntry ->
-                        val newsDetail: NewsDetail = backStackEntry.toRoute()
-                        NewsDetailScreen(
-                            onNavigateUp = { navController.navigateUp() },
-                            newsDetail.title, newsDetail.description, newsDetail.pubDate, newsDetail.imageUrl)
+                    NavHost(
+                        navController = navController,
+                        startDestination = Home,
+                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                    ) {
+                        composable<Home> {
+                            MainScreen(
+                                onNavigationToNewsDetail = { item ->
+                                    navController.navigate(NewsDetail(item.title, item.description, item.pubDate, item.imageUrl))
+                                },
+                                onNavigationToAISummaryScreen = { item, summary ->
+                                    navController.navigate(NewsDetail(item.title, summary, item.pubDate, item.imageUrl))
+                                }
+                            )
+                        }
+                        composable<NewsDetail>(
+                            enterTransition = { slideInVertically(initialOffsetY = { it }) },
+                            exitTransition = { slideOutVertically(targetOffsetY = { it }) },
+                            popEnterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
+                            popExitTransition = { slideOutVertically(targetOffsetY = { it }) }
+                        ) { backStackEntry ->
+                            val newsDetail: NewsDetail = backStackEntry.toRoute()
+                            NewsDetailScreen(
+                                onNavigateUp = { navController.navigateUp() },
+                                newsDetail.title, newsDetail.description, newsDetail.pubDate, newsDetail.imageUrl)
+                        }
                     }
                 }
             }

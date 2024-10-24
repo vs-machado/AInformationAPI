@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -50,7 +51,6 @@ fun SearchBar(
             .padding(horizontalPadding, verticalPadding)
             .clip(RoundedCornerShape(24.dp))
             .background(backgroundColor)
-            .border(1.dp, Color(0xFF121B22), RoundedCornerShape(24.dp))
             .height(48.dp)
     ) {
         val customTextSelectionColors = TextSelectionColors(
@@ -67,7 +67,7 @@ fun SearchBar(
                 },
                 singleLine = true,
                 textStyle = TextStyle(
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 16.sp,
                 ),
                 cursorBrush = cursorBrushColor,
@@ -102,7 +102,7 @@ fun SearchBar(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Clear",
-                    tint = Color(0xFF70777B)
+                    tint = MaterialTheme.colorScheme.outline
                 )
             }
         }
