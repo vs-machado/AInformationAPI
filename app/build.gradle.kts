@@ -15,11 +15,11 @@ plugins {
 }
 
 android {
-    namespace = "com.phoenix.newsapp"
+    namespace = "com.phoenix.ainformation"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.phoenix.newsapp"
+        applicationId = "com.phoenix.ainformation"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

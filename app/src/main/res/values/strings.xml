@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">News App</string>
+    <string name="app_name">AInformation</string>
     <string name="app_logo">App logo</string>
     <string name="connection_error">Connection error occurred.</string>
     <string name="try_again">Try again</string>
