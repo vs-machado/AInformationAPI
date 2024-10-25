@@ -46,6 +46,9 @@
   <li>Kapt for annotation processing (KSP was not used due to incompatibilities with TikXML)</li>
 </ul>
 
+<h2>Making changes</h2>
+You need to provide a Gemini API key in order to launch the app through Android Studio. For more details, access the following website: https://developer.android.com/ai/google-ai-client-sdk#generate-api-key
+
 <h2>Disclaimer</h2>
 Do not rely in AI news summary to spread informations, always read the full news before. <br>
 Feedx RSS feed used to demonstrate the app logic (it only displays 10 recent news from Associated Press). The RSS feed will be replaced by a news API in a further project.<br>
