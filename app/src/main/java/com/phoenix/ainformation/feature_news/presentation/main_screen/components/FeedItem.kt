@@ -93,6 +93,7 @@ fun FeedItem(
                 color = Color.Gray,
                 modifier = Modifier.padding(horizontal = 18.dp)
             )
+            Spacer(modifier = Modifier.height(6.dp))
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
