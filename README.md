@@ -22,6 +22,11 @@
   <li>Generate news summaries using AI</li>
 </ul>
 
+<h2>Installation</h2>
+<a href="https://github.com/vs-machado/AInformation/releases/tag/v1.0.0">
+    <img alt="GitHub installation" width="200px" src="https://github.com/user-attachments/assets/aece0484-443f-46a8-9c81-d08efe0268b2" />
+</a>
+
 <h2>Languages supported</h2>
 <ul>
   <li>English</li>
