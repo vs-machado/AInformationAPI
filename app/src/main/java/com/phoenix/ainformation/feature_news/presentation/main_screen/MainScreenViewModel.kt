@@ -3,16 +3,16 @@ package com.phoenix.ainformation.feature_news.presentation.main_screen
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
-import com.phoenix.ainformation.feature_news.data.repository.DefaultPaginator
-import com.phoenix.ainformation.feature_news.domain.model.RssItem
-import com.phoenix.ainformation.feature_news.domain.model.repository.NewsRepository
-import com.phoenix.ainformation.feature_news.domain.util.Parser
+import com.phoenix.ainformation.feature_news.domain.model.news_api.repository.ApiNewsRepository
+import com.phoenix.ainformation.feature_news.domain.model.rss_feed.RssItem
+import com.phoenix.ainformation.feature_news.domain.model.rss_feed.repository.RssNewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -29,16 +28,18 @@ import javax.inject.Inject
  * for the main screen of the news app. It handles fetching and filtering news items,
  * pagination, search functionality, and generating AI summaries for news articles.
  *
- * @param newsRepository The repository used to fetch news items.
+ * @param apiNewsRepository The repository used to fetch news items.
  */
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val newsRepository: NewsRepository,
+    private val apiNewsRepository: ApiNewsRepository,
     private val model: GenerativeModel
 ): ViewModel() {
 
-    private val _feedState = MutableStateFlow<FeedState>(FeedState.Initial)
-    val feedState: StateFlow<FeedState> = _feedState.asStateFlow()
+    // NewsData API state
+    private val _newsStateFlow = MutableStateFlow<ApiFeedState>(ApiFeedState.Initial)
+    val newsStateFlow: StateFlow<ApiFeedState> = _newsStateFlow.asStateFlow()
+
 
     // Verifies if the Gemini response was correctly fetched and handles the app actions.
     private val _aiSummaryState = MutableStateFlow<AISummaryState>(AISummaryState.Initial)
@@ -54,78 +55,82 @@ class MainScreenViewModel @Inject constructor(
     var state by mutableStateOf(ScreenState())
 
     // News feed filter.
-    val filteredFeed = combine(feedState, searchQuery) { state, query ->
+    val filteredFeed = combine(newsStateFlow, searchQuery) { state, query ->
         when(state){
-            is FeedState.Success -> {
+            is ApiFeedState.Success -> {
                 state.copy(items = state.items.filter { item ->
                     item.title.contains(query, ignoreCase = true) ||
                             item.description.contains(query, ignoreCase = true)
                 })
             }
+
             else -> state
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), FeedState.Initial)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ApiFeedState.Initial)
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
 
-    // Used to fetch the news feed during scrolling
-    private val paginator = DefaultPaginator(
-        initialKey = state.page,
-        onLoadUpdated = {
-            state = state.copy(isLoading = it)
-        },
-        onRequest = { nextPage ->
-            newsRepository.getItems(nextPage, 10)
-        },
-        getNextKey = {
-            state.page + 1
-        },
-        onError = { error ->
-            state = when(error){
-                is UnknownHostException -> {
-                    _feedState.value = FeedState.Error("Connection error occurred")
-                    state.copy(error = "Connection error occurred")
-                }
-
-                else -> {
-                    state.copy(error = error?.localizedMessage)
-                }
-            }
-        },
-        onSuccess = { items, newKey ->
-            state = state.copy(
-                items = state.items + items,
-                page = newKey,
-                endReached = items.isEmpty(),
-                error = null
-            )
-        }
-    )
+//    // Used to fetch the news feed during scrolling
+//    private val paginator = DefaultPaginator(
+//        initialKey = state.page,
+//        onLoadUpdated = {
+//            state = state.copy(isLoading = it)
+//        },
+//        onRequest = { nextPage ->
+//            rssNewsRepository.getItems(nextPage, 10)
+//        },
+//        getNextKey = {
+//            state.page + 1
+//        },
+//        onError = { error ->
+//            state = when(error){
+//                is UnknownHostException -> {
+//                    _rssFeedState.value = RssFeedState.Error("Connection error occurred")
+//                    state.copy(error = "Connection error occurred")
+//                }
+//
+//                else -> {
+//                    state.copy(error = error?.localizedMessage)
+//                }
+//            }
+//        },
+//        onSuccess = { items, newKey ->
+//            state = state.copy(
+//                items = state.items + items,
+//                page = newKey,
+//                endReached = items.isEmpty(),
+//                error = null
+//            )
+//        }
+//    )
 
     /* When user is scrolling the feed the state is not changed to Loading to avoid showing
      * the circular progress indicator used when launching the app. */
-    fun fetchRssFeed(isScrolling: Boolean) {
+    fun fetchApiLatestNews(isScrolling: Boolean) {
+        Log.d("debug", "fetchApi called")
         viewModelScope.launch {
-            if (!isScrolling) {
-                _feedState.value = FeedState.Loading
+            if(!isScrolling) {
+                _newsStateFlow.value = ApiFeedState.Loading
             }
 
-            paginator.loadNextItems()
-
-            // If there's an UnknownHostException during the news fetch the FeedState is Error (defined in paginator instance)
-            if (state.error != null) {
-                return@launch
-            }
-
-            val processedItems = Parser().extractImageUrls(state.items)
-            _feedState.value = FeedState.Success(processedItems)
+           apiNewsRepository.getLatestNews()
+               .fold(
+                   onSuccess = { articles ->
+                       _newsStateFlow.value = ApiFeedState.Success(articles)
+                       Log.d("debug", "onSuccess")
+                   },
+                   onFailure = { error ->
+                       _newsStateFlow.value = ApiFeedState.Error(error.message ?: "Unknown error occurred")
+                       Log.d("debug", "onFailure")
+                   }
+               )
         }
     }
 
     init {
-        fetchRssFeed(isScrolling = false)
+        fetchApiLatestNews(isScrolling = false)
     }
 
     // Updates aiSummarizedState with the latest generated AI response

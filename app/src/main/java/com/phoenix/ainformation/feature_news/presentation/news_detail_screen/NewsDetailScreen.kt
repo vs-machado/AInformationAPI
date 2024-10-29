@@ -76,7 +76,7 @@ fun NewsDetailScreen(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = DateUtil(context = context).formatPubDate(pubDate),
+                text = pubDate/*DateUtil(context = context).formatPubDate(pubDate)*/,
                 fontSize = 14.sp,
                 color = Color.Gray
             )

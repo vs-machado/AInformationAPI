@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.phoenix.ainformation.R
-import com.phoenix.ainformation.feature_news.domain.model.RssItem
+import com.phoenix.ainformation.feature_news.domain.model.news_api.NewsArticle
 import com.phoenix.ainformation.feature_news.presentation.main_screen.components.FeedItem
 import com.phoenix.ainformation.feature_news.presentation.main_screen.components.SearchBar
 
@@ -55,10 +55,10 @@ import com.phoenix.ainformation.feature_news.presentation.main_screen.components
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel = hiltViewModel(),
-    onNavigationToNewsDetail: (RssItem) -> Unit,
-    onNavigationToAISummaryScreen: (RssItem, String) -> Unit
+    onNavigationToNewsDetail: (NewsArticle) -> Unit,
+    onNavigationToAISummaryScreen: (NewsArticle, String) -> Unit
 ) {
-    val feedState by viewModel.filteredFeed.collectAsState()
+    val apiFeedState by viewModel.filteredFeed.collectAsState()
 
     Scaffold(
         topBar = {
@@ -106,10 +106,10 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                when (val state = feedState) {
-                    is FeedState.Initial -> {}
-                    is FeedState.Loading -> LoadingIndicator()
-                    is FeedState.Success -> {
+                when(val state = apiFeedState) {
+                    is ApiFeedState.Initial -> {}
+                    is ApiFeedState.Loading -> LoadingIndicator()
+                    is ApiFeedState.Success -> {
                         val filteredFeed = state.items.filter {
                             it.title.contains(searchQuery, ignoreCase = true) ||
                                     it.description.contains(searchQuery, ignoreCase = true)
@@ -121,28 +121,28 @@ fun MainScreen(
                             onNavigationToAISummaryScreen = onNavigationToAISummaryScreen
                         )
                     }
-                    is FeedState.Error -> {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Text(
-                                text = stringResource(R.string.connection_error),
-                                modifier = Modifier.padding(bottom = 16.dp),
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                            Button(
-                                onClick = { viewModel.fetchRssFeed(isScrolling = false) },
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = MaterialTheme.colorScheme.onSecondary,
-                                    containerColor = MaterialTheme.colorScheme.secondary
-                                )
+                    is ApiFeedState.Error -> {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxSize()
                             ) {
-                                Text(stringResource(R.string.try_again))
+                                Text(
+                                    text = stringResource(R.string.connection_error),
+                                    modifier = Modifier.padding(bottom = 16.dp),
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                                Button(
+                                    onClick = { viewModel.fetchApiLatestNews(isScrolling = false) },
+                                    colors = ButtonDefaults.buttonColors(
+                                        contentColor = MaterialTheme.colorScheme.onSecondary,
+                                        containerColor = MaterialTheme.colorScheme.secondary
+                                    )
+                                ) {
+                                    Text(stringResource(R.string.try_again))
+                                }
                             }
                         }
-                    }
                 }
             }
         }
@@ -151,10 +151,10 @@ fun MainScreen(
 
 @Composable
 fun FeedContent(
-    feed: List<RssItem>,
+    feed: List<NewsArticle>,
     viewModel: MainScreenViewModel = hiltViewModel(),
-    onNavigationToNewsDetail: (RssItem) -> Unit,
-    onNavigationToAISummaryScreen: (RssItem, String) -> Unit
+    onNavigationToNewsDetail: (NewsArticle) -> Unit,
+    onNavigationToAISummaryScreen: (NewsArticle, String) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -167,7 +167,7 @@ fun FeedContent(
                         val lastIndex = lazyListState.layoutInfo.totalItemsCount - 1
 
                         if (lastVisibleItem.index == lastIndex) {
-                            viewModel.fetchRssFeed(isScrolling = true)
+                            viewModel.fetchApiLatestNews(isScrolling = true)
                         }
                     }
                 }

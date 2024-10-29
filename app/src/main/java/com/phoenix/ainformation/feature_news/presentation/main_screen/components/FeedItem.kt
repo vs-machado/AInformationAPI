@@ -40,7 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.phoenix.ainformation.R
-import com.phoenix.ainformation.feature_news.domain.model.RssItem
+import com.phoenix.ainformation.feature_news.domain.model.news_api.NewsArticle
 import com.phoenix.ainformation.feature_news.domain.util.DateUtil
 import com.phoenix.ainformation.feature_news.presentation.main_screen.AISummaryState
 import com.phoenix.ainformation.feature_news.presentation.main_screen.MainScreenViewModel
@@ -48,7 +48,7 @@ import java.util.Locale
 
 @Composable
 fun FeedItem(
-    item: RssItem,
+    item: NewsArticle,
     onItemClick: () -> Unit,
     viewModel: MainScreenViewModel = hiltViewModel(),
     onNavigateToAISummaryScreen: (String) -> Unit
@@ -88,7 +88,7 @@ fun FeedItem(
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = DateUtil(context).getTimeAgo(item.pubDate),
+                text = item.pubDate/*DateUtil(context).getTimeAgo(item.pubDate)*/,
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.Gray,
                 modifier = Modifier.padding(horizontal = 18.dp)
@@ -128,11 +128,11 @@ fun FeedItem(
             AISummaryDialog(
                 onDismissRequest = { openAlertDialog.value = false },
                 onConfirmation = {
-                    viewModel.generateAISummary(item.description, Locale.getDefault().language.toString(), item.id)
+                    viewModel.generateAISummary(item.description, Locale.getDefault().language.toString(), item.articleId)
                 },
                 dialogTitle = stringResource(R.string.generate_ai_summary),
                 dialogText = stringResource(R.string.ai_summary_dialog_text),
-                currentItemId = item.id,
+                currentItemId = item.articleId,
                 currentSummarizedItemId = currentSummarizedItemId.value!!,
                 icon = ImageVector.vectorResource(id = R.drawable.ic_gemini),
                 aiSummaryState = aiSummaryState.value,
